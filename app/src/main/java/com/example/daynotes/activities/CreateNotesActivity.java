@@ -88,6 +88,16 @@ public class CreateNotesActivity extends AppCompatActivity {
                         .format(new Date())
         );
         ImageView imageSave= findViewById(R.id.imagesave);
+        ImageView back=findViewById(R.id.back);
+
+        // back to previous activity
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                CreateNotesActivity.super.onBackPressed();
+            }
+        });
         imageSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,6 +112,7 @@ public class CreateNotesActivity extends AppCompatActivity {
                 layoutWebUrl.setVisibility(View.GONE);
             }
         });
+        //Delete the image from path
         findViewById(R.id.imageRemoveImage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,6 +122,7 @@ public class CreateNotesActivity extends AppCompatActivity {
                 selectedImagePath="";
             }
         });
+
         initExtra();
         setSubtitleIndicator();
     }
@@ -205,49 +217,68 @@ public class CreateNotesActivity extends AppCompatActivity {
         final ImageView imageView2= layout.findViewById(R.id.imageColor2);
         final ImageView imageView3= layout.findViewById(R.id.imageColor3);
         final ImageView imageView4= layout.findViewById(R.id.imageColor4);
+        final ImageView imageView5= layout.findViewById(R.id.imageColor5);
 
         layout.findViewById(R.id.viewColor1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectedNoteColor="#00000";
+                selectedNoteColor="#DA70D6";
                 imageView1.setImageResource(R.drawable.done);
                 imageView2.setImageResource(0);
                 imageView3.setImageResource(0);
                 imageView4.setImageResource(0);
+                imageView5.setImageResource(0);
+
                 setSubtitleIndicator();
             }
         });
         layout.findViewById(R.id.viewColor2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectedNoteColor="#E4BF37";
+                selectedNoteColor="#AA98A9";
                 imageView2.setImageResource(R.drawable.done);
                 imageView1.setImageResource(0);
                 imageView3.setImageResource(0);
                 imageView4.setImageResource(0);
+                imageView5.setImageResource(0);
                 setSubtitleIndicator();
             }
         });
         layout.findViewById(R.id.viewColor3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectedNoteColor="#FF0000";
+                selectedNoteColor="#ccadea";
                 imageView3.setImageResource(R.drawable.done);
                 imageView2.setImageResource(0);
                 imageView1.setImageResource(0);
                 imageView4.setImageResource(0);
+                imageView5.setImageResource(0);
                 setSubtitleIndicator();
             }
         });
         layout.findViewById(R.id.viewColor4).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectedNoteColor="#87CEEB";
+                selectedNoteColor="#CCCCFF";
                 imageView4.setImageResource(R.drawable.done);
                 imageView2.setImageResource(0);
                 imageView1.setImageResource(0);
                 imageView3.setImageResource(0);
+                imageView5.setImageResource(0);
                 setSubtitleIndicator();
+            }
+        });
+        layout.findViewById(R.id.viewColor5).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedNoteColor="#D8BFD8";
+                imageView5.setImageResource(R.drawable.done);
+                imageView2.setImageResource(0);
+                imageView1.setImageResource(0);
+                imageView3.setImageResource(0);
+                imageView4.setImageResource(0);
+                setSubtitleIndicator();
+
             }
         });
         if(alreadyAvailableNote!= null && alreadyAvailableNote.getColor()!=null && alreadyAvailableNote.getColor().trim().isEmpty())

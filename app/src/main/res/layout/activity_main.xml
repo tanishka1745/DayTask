@@ -40,6 +40,8 @@
         <EditText
             android:layout_width="match_parent"
             android:id="@+id/inputSearch"
+            android:hint="Search Here"
+            android:textSize="16sp"
             android:layout_marginStart="12dp"
             android:imeOptions="actionDone"
             android:background="@null"

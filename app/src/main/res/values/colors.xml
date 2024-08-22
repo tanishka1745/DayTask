@@ -8,6 +8,10 @@
     <color name="green">#FF44F155</color>
     <color name="purple">#8300c4</color>
     <color name="dark_purle">#31004a</color>
-    <color name="light_purple">#ccadea</color>
+    <color name="light_purple1">#ccadea</color>
+    <color name="light_purple2">#AA98A9</color>
     <color name="v_light_purple">#CBC3E3</color>
+    <color name="orchid">#DA70D6</color>
+    <color name="orchid2">#CCCCFF</color>
+    <color name="thistel">#D8BFD8</color>
 </resources>

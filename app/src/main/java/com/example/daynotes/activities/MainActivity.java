@@ -1,14 +1,26 @@
 package com.example.daynotes.activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -26,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements NoteListener {
     public static final  int REQUEST_CODE_ADD_NOTE=1;
     public static final int REQUEST_CODE_UPDATE_NOTE=2;
     public static final int REQUEST_CODE_SHOW_NOTES=3;
+    public static final int REQUEST_CODE_SELECT_IMAGE=4;
+    public static final int REQUEST_CODE_PERMIT=5;
     private RecyclerView recyclerView;
     List<Note> noteList;
     private NoteAdapter noteAdapter;
@@ -36,21 +50,96 @@ public class MainActivity extends AppCompatActivity implements NoteListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageView imageViewNote= findViewById(R.id.add_task);
+        ImageView imageViewNote = findViewById(R.id.add_task);
         imageViewNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getApplicationContext(),CreateNotesActivity.class),REQUEST_CODE_ADD_NOTE);
+                startActivityForResult(new Intent(getApplicationContext(), CreateNotesActivity.class), REQUEST_CODE_ADD_NOTE);
             }
         });
-        recyclerView=findViewById(R.id.noteRecylereview);
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
+        recyclerView = findViewById(R.id.noteRecylereview);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
-        noteList= new ArrayList<>();
-        noteAdapter= new NoteAdapter(noteList,this);
+        noteList = new ArrayList<>();
+        noteAdapter = new NoteAdapter(noteList, this);
         recyclerView.setAdapter(noteAdapter);
-        getNotes(REQUEST_CODE_SHOW_NOTES,false);
+        getNotes(REQUEST_CODE_SHOW_NOTES, false);
+
+        EditText inputSearch = findViewById(R.id.inputSearch);
+        inputSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                noteAdapter.cancelTimer();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (noteList.size() != 0) {
+                    noteAdapter.searchNotes(s.toString());
+                }
+            }
+        });
+        findViewById(R.id.add_image).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE)!=
+                        PackageManager.PERMISSION_GRANTED)
+                {
+                    ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            REQUEST_CODE_PERMIT);
+                }
+                else{
+                    selectImage();
+                }
+            }
+        });
     }
+    private void selectImage()
+    {
+        Intent intent= new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        if(intent.resolveActivity(getPackageManager())!=null)
+        {
+            startActivityForResult(intent,REQUEST_CODE_SELECT_IMAGE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode==REQUEST_CODE_PERMIT && grantResults.length>0)
+        {
+            if(grantResults[0]==PackageManager.PERMISSION_GRANTED)
+            {
+                selectImage();
+            }
+            else{
+                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    private String getPathFormerUri(Uri contentUri)
+    {
+        String filePath;
+        Cursor cursor= getContentResolver()
+                .query(contentUri,null,null,null,null);
+        if(cursor==null)
+        {
+            filePath=contentUri.getPath();
+        }
+        else{
+            cursor.moveToFirst();
+            int index= cursor.getColumnIndex("_data");
+            filePath= cursor.getString(index);
+            cursor.close();
+        }
+        return filePath;
+    }
+
     private void getNotes(final int requestCode, final boolean isNoteDeleted)
     {
         class GetNotesTask extends AsyncTask<Void,Void, List<Note>>
@@ -116,6 +205,28 @@ public class MainActivity extends AppCompatActivity implements NoteListener {
                 getNotes(REQUEST_CODE_UPDATE_NOTE,data.getBooleanExtra("isNoteDeleted",false));
             }
         }
+        else if(requestCode==REQUEST_CODE_SELECT_IMAGE && resultCode==RESULT_OK)
+        {
+            if(data!=null)
+            {
+                Uri selectImageUri= data.getData();
+                if(selectImageUri!=null)
+                {
+                    try{
+                        String selectPath= getPathFormerUri(selectImageUri);
+                        Intent intent= new Intent(getApplicationContext(),CreateNotesActivity.class);
+                        intent.putExtra("isFromQuickAction",true);
+                        intent.putExtra("quickType","image");
+                        intent.putExtra("imagePath",selectPath);
+                        startActivityForResult(intent,REQUEST_CODE_ADD_NOTE);
+                    }
+                    catch (Exception e)
+                    {
+                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }
     }
 
     //get to create note activity...
@@ -129,4 +240,5 @@ public class MainActivity extends AppCompatActivity implements NoteListener {
         intent.putExtra("note",note);
         startActivityForResult(intent,REQUEST_CODE_UPDATE_NOTE);
     }
+
 }
