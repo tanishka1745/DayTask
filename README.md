@@ -18,7 +18,7 @@ This is used to build remembering our day-to-day frequent task. Like have to do 
 # Running From Source
 1.Clone the repository </br>
 cd {path/to/your/workspace} </br>
-git clone https://github.com/tanishka1745/FreezyNotes.git </br>
+git clone https://github.com/tanishka1745/DayTask.git </br>
 2.Open the project in Android Studio </br>
 3.Add google-services.json to the app directory (Create a Firebase project and add an Android app to it to get this file) </br>
 4.Gradle sync to download dependencies </br>
