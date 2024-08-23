@@ -3,9 +3,16 @@
 This is used to build remembering our day-to-day frequent task. Like have to do some home chores or important event related to that, so this app will help to those.
 
 # ScreenShots
+![not2](https://github.com/user-attachments/assets/d615ad34-377d-41d4-9cf2-6e4952b7dbf6)
 ![not1](https://github.com/user-attachments/assets/cc88726e-e1f5-402a-9f3d-401f0127b87d)
-![not2](https://github.com/user-attachments/assets/a3ccb07e-c651-4ecb-91b7-c5e3ee371727)
 ![not3](https://github.com/user-attachments/assets/3255b499-e466-4678-b6bc-6813d6bb80f9)
+
+#Feautues
+
+1. This app use to store your daily task
+2.  This will store your links and important images
+3.  Simply Perform CRUD functionality.
+4.  Easy to use and interact.
 
 
 # Running From Source
